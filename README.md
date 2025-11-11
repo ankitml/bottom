@@ -1,14 +1,27 @@
 # GitHub Actions Scroll Helper
 
-A lightweight Chrome extension that adds a “jump to bottom” control on GitHub Actions log panes so you can keep the newest output in view while long-running steps stream their logs.
+A lightweight Chrome extension that adds a "jump to bottom" control on GitHub Actions log panes. When a step fails in a long-running workflow, the error is often buried deep in thousands of log lines—manually scrolling to find it is tedious and painful. This extension makes it effortless: one click jumps you to the bottom where the failure (or the most recent output) typically is.
 
-## Features
+## Why This Extension?
+
+GitHub Actions doesn't provide a built-in way to jump to the end of long logs. When you expand a failed step with 10,000+ lines of output, you have to manually scroll—sometimes for several seconds—to reach the actual error message at the bottom. This is especially frustrating when triaging multiple failed builds or debugging CI issues.
+
+This extension solves that by:
+- Adding a ⏬ button that instantly jumps to ~99% of the log (where errors typically appear)
+- Auto-sticking to the bottom as new logs stream in, so you never lose your place
+- Intelligently hiding itself when not needed (short logs, closed steps)
+
+## Demo
+
+![scroll-to-bottom](https://github.com/user-attachments/assets/a2ad4eef-31ba-4bb7-8235-4c7170cbb581)
+
 <img width="1599" height="721" alt="scroll-to-bottom" src="https://github.com/user-attachments/assets/c5057e8e-1c4e-4c8e-8115-ad620c4fcd75" />
 
+## Features
+
 - Shows an unobtrusive ⏬ button only when a step is expanded, has more than ~50 log lines, and the logs overflow the pane.
-- Scrolls to ~99 % of the available log height and enables an auto-stick mode so new log lines stay in view.
-- Works across the legacy Actions layout and the newer “check-step” interface, hiding itself again when the pane collapses or the log fits on screen.
-![scroll-to-bottom](https://github.com/user-attachments/assets/a2ad4eef-31ba-4bb7-8235-4c7170cbb581)
+- Scrolls to ~99% of the available log height and enables an auto-stick mode so new log lines stay in view.
+- Works across the legacy Actions layout and the newer "check-step" interface, hiding itself again when the pane collapses or the log fits on screen.
 
 ## Usage
 
@@ -26,5 +39,22 @@ A lightweight Chrome extension that adds a “jump to bottom” control on GitHu
 
 - A combination of `MutationObserver` and `ResizeObserver` tracks pane creation, expansion, window resize, and streaming output to keep scroll targets up to date.
 - Scroll targets are chosen dynamically: an overflowing inner container is preferred; otherwise the document scroller is used.
-- Fallback scrolling relies on the final log anchor (or the deepest visible child) to keep the newest lines visible even when GitHub’s DOM structure shifts. The scroll button is hidden whenever the pane is closed or the logs no longer overflow.
+- Fallback scrolling relies on the final log anchor (or the deepest visible child) to keep the newest lines visible even when GitHub's DOM structure shifts. The scroll button is hidden whenever the pane is closed or the logs no longer overflow.
 
+## Known Limitations
+
+- The extension only works on `https://github.com/*/actions/runs/*` URLs (job detail pages).
+- Very rapid DOM changes or unusual GitHub UI variations may occasionally require a page refresh.
+- The ~50 line threshold is a heuristic; short logs that still overflow may not trigger the button immediately.
+
+## Contributing
+
+Contributions are welcome! If you find a bug or have a feature request:
+
+1. Check existing [issues](../../issues) to avoid duplicates.
+2. Open a new issue with clear steps to reproduce (for bugs) or a detailed explanation (for features).
+3. Pull requests should include a brief description of the change and why it's needed.
+
+## License
+
+MIT License - feel free to use, modify, and distribute this extension.
