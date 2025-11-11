@@ -3,6 +3,7 @@
 A lightweight Chrome extension that adds a “jump to bottom” control on GitHub Actions log panes so you can keep the newest output in view while long-running steps stream their logs.
 
 ## Features
+<img width="1599" height="721" alt="scroll-to-bottom" src="https://github.com/user-attachments/assets/c5057e8e-1c4e-4c8e-8115-ad620c4fcd75" />
 
 - Shows an unobtrusive ⏬ button only when a step is expanded, has more than ~50 log lines, and the logs overflow the pane.
 - Scrolls to ~99 % of the available log height and enables an auto-stick mode so new log lines stay in view.
