@@ -8,6 +8,7 @@ A lightweight Chrome extension that adds a “jump to bottom” control on GitHu
 - Shows an unobtrusive ⏬ button only when a step is expanded, has more than ~50 log lines, and the logs overflow the pane.
 - Scrolls to ~99 % of the available log height and enables an auto-stick mode so new log lines stay in view.
 - Works across the legacy Actions layout and the newer “check-step” interface, hiding itself again when the pane collapses or the log fits on screen.
+![scroll-to-bottom](https://github.com/user-attachments/assets/a2ad4eef-31ba-4bb7-8235-4c7170cbb581)
 
 ## Usage
 
