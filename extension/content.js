@@ -21,6 +21,7 @@
   const SCROLL_STICKY_MARGIN = 24;
   const SCROLL_TARGET_RATIO = 0.99;
   const MIN_SCROLL_DELTA = 48;
+  const MIN_LOG_LINES = 50;
 
   function init() {
     if (document.body == null) {
@@ -522,6 +523,39 @@
       : null;
   }
 
+  function findLogContainer(record) {
+    if (!record || !record.pane) {
+      return null;
+    }
+    return record.pane.querySelector(
+      '.js-checks-log-display-container, .js-log-details-container, .log-stream, [data-test-selector="log-step-body"], pre'
+    );
+  }
+
+  function countLogLines(record) {
+    const container = findLogContainer(record);
+    if (!(container instanceof HTMLElement)) {
+      return 0;
+    }
+
+    const anchors = container.querySelectorAll('a[href*="#step:"]');
+    if (anchors.length > 0) {
+      return anchors.length;
+    }
+
+    const blockElements = container.querySelectorAll('div, span, p, li');
+    if (blockElements.length > 0) {
+      return blockElements.length;
+    }
+
+    const text = container.textContent || '';
+    if (!text.trim()) {
+      return 0;
+    }
+
+    return text.split(/\r?\n/).filter((line) => line.trim().length > 0).length;
+  }
+
   function measureScrollableExtent(record) {
     if (!record) {
       return 0;
@@ -564,7 +598,9 @@
       pane instanceof HTMLElement && pane.tagName === 'DETAILS';
     const isOpen = !isDetailsPane || (pane && pane.open);
     const extent = isOpen ? measureScrollableExtent(record) : 0;
-    const shouldShow = isOpen && extent > MIN_SCROLL_DELTA;
+    const lines = isOpen ? countLogLines(record) : 0;
+    const shouldShow =
+      isOpen && extent > MIN_SCROLL_DELTA && lines >= MIN_LOG_LINES;
 
     if (shouldShow) {
       record.button.style.display = '';
@@ -589,9 +625,7 @@
       record.contentObserver = null;
     }
 
-    const container = pane.querySelector(
-      '.js-checks-log-display-container, .js-log-details-container, .log-stream, [data-test-selector="log-step-body"], pre'
-    );
+    const container = findLogContainer(record);
 
     if (!(container instanceof HTMLElement)) {
       return;
